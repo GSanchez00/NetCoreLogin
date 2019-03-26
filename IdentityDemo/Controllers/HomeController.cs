@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using IdentityDemo.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace IdentityDemo.Controllers
 {
@@ -43,12 +44,24 @@ namespace IdentityDemo.Controllers
                 //Tenemos funciones como remover claim, remover usuario de un role, etc
 
 
-
-                await roleManager.CreateAsync(new IdentityRole("Admin"));
                 var user = await userManager.GetUserAsync(HttpContext.User);
+                var claimEmpleado=User.Claims.Where(c => c.Type == "CategoriaEmpleado").FirstOrDefault();
+                if (claimEmpleado==null)
+                {
+                    await userManager.AddClaimAsync(user, new Claim("CategoriaEmpleado", "4"));
+                    var claims = User.Claims.ToList();
+                }
 
-                await userManager.AddToRoleAsync(user, "Admin");
-           }
+                //if (!roleManager.RoleExistsAsync("Admin").Result)
+                //{
+                //    //Crear Rol Admin y agregarselo al usuario
+                //    await roleManager.CreateAsync(new IdentityRole("Admin"));
+                //    var user = await userManager.GetUserAsync(HttpContext.User);
+                //    await userManager.AddToRoleAsync(user, "Admin");
+                //}
+
+
+            }
 
            return View();
         }
@@ -58,7 +71,8 @@ namespace IdentityDemo.Controllers
             return View();
         }
 
-        [Authorize(Roles = "Superman")]
+        //[Authorize(Roles = "Superman")]
+        [Authorize(Policy ="PolicyCategoriaEmpleado")]
         public IActionResult About()
         {
             ViewData["Message"] = "Sobre nosotros.";

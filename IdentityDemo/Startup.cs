@@ -81,6 +81,10 @@ namespace IdentityDemo
                 options.SlidingExpiration = true;
             });
 
+            services.AddAuthorization(option =>
+                option.AddPolicy("PolicyCategoriaEmpleado", pol => pol.RequireClaim("CategoriaEmpleado"))
+            );
+
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
 
