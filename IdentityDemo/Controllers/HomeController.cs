@@ -46,7 +46,7 @@ namespace IdentityDemo.Controllers
 
                 var user = await userManager.GetUserAsync(HttpContext.User);
                 var claimEmpleado=User.Claims.Where(c => c.Type == "CategoriaEmpleado").FirstOrDefault();
-                if (claimEmpleado==null)
+                if (claimEmpleado==null) 
                 {
                     await userManager.AddClaimAsync(user, new Claim("CategoriaEmpleado", "4"));
                     var claims = User.Claims.ToList();
